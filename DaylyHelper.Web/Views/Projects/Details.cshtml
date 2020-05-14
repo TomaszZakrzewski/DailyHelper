@@ -1,0 +1,138 @@
+﻿@model DaylyHelper.Data.Models.Project
+@{
+    ViewBag.Title = "Details";
+}
+    <div >
+        <div class="card mt-4 border-dark">
+            <h2 class="card-header bg-custom text-white">@Model.Title</h2>
+            
+            <dl class="dl-horizontal card-body">
+                <dt>
+                    <h3>Opis</h3>
+                </dt>
+
+                <dd>
+                    <h4>@Html.DisplayFor(model => model.Description)</h4>
+                </dd>
+
+                <dt>
+                    Utworzono
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Created)
+                </dd>
+
+                <dt>
+                    Ostatnio modyfikowano
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Modified)
+                </dd>
+                <!--
+                <dt>
+                    @Html.DisplayNameFor(model => model.Done)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Done)
+                </dd>
+            -->
+            </dl>
+        </div>
+
+        
+            @using (Html.BeginForm("AddNote", "Projects", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+                @Html.AntiForgeryToken()
+                {
+                    var note = new DaylyHelper.Data.Models.Note();
+                    <div class="mt-4 form-horizontal card border-dark">
+                        <h4 class="card-header bg-custom text-white">Note</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="card-body">
+                        <div class="form-group">
+                            Pilność
+                            <div class="col-md-10">
+                                @Html.EnumDropDownListFor(model => note.Importancy, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => note.Importancy, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            Glówny cel
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => note.MainTask, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => note.MainTask, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            Opis
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => note.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => note.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <input type="submit" value="NewNote" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+
+
+        
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+        <div class="float-none">
+            @foreach (var status in (DaylyHelper.Data.Models.ImportancyType[])Enum.GetValues(typeof(DaylyHelper.Data.Models.ImportancyType)))
+            {
+                
+                <div id="draggable" class="card w-25 float-left min-vh-100 draggable ui-widget-content">
+                    <div  class="card-header text-center">
+                        @status
+                    </div>
+                    <div class="card-body ">
+                        @if (Model.Notes.Count != 0)
+                        {
+
+                            foreach (var item in Model.Notes)
+                            {
+                                if (item.Importancy == status)
+                                {
+                                    <div class="card text-left" draggable="true" ondragstart="">
+                                        <td style="font-size:18px">
+                                            <p class="card-header bg-custom text-white">@item.MainTask</p>
+                                        </td>
+                                        <td>
+                                            <p class="card-body">@item.Description</p>
+                                        </td>
+                                        <td>
+                                            <div class="card-footer">@Html.ActionLink("Delete", "DeleteNote", new { id = item.Id })</div>
+                                        </td>
+                                    </div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <p>No notes in this project</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>

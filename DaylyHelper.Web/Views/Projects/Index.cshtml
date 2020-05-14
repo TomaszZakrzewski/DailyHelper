@@ -1,0 +1,68 @@
+﻿@model IEnumerable<DaylyHelper.Data.Models.Project>
+
+@{
+    ViewBag.Title = "Index";
+}
+    <div >
+        <div class="mt-4" >
+            <div class="card border-dark float-left mr-2">
+
+                <h2 class="bg-custom card-header text-white text-center " style="background-color: #0e7ca5">
+                    Projects
+                </h2>
+                <div class=" card-body text-center">
+                    <h3>@Model.Count()</h3>
+                </div>
+            </div>
+            <div class="card border-dark float-none">
+
+                <h2 class="bg-custom card-header text-white text-center ">
+                    Done
+                </h2>
+                <div class=" card-body  text-center">
+                    <h3>@Model.Where(n => n.Done).Count()</h3>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="card mt-4">
+            <div class="card-body containerwin">
+
+                <div class="projectbox text-center row-cols-1 d-flex align-items-center text-white " style="background-color: #4392F1; ">
+                    <a class="stretched-link" href="/Projects/Create" style="font-size:100px;">+</a>
+                </div>
+                
+                    @foreach (var item in Model)
+                    {
+                <div>
+                
+                <a href="/Projects/Details/@item.Id">
+                    <figure class="projectbox text-center row-cols-1 text-white" style="background-color: @(item.Done==true?"#4392F1":"#DC493A")   ">
+                        <div>
+
+                            <div style="font-size:larger">
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </div>
+
+
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </div>
+                            <div>
+                                @Html.DisplayFor(modelItem => item.Created)
+                            </div>
+                            <div class="row">
+                                <a class="col " href="/Projects/Edit/@item.Id">Edytuj</a>
+                                <a class="col" href="/Projects/Delete/@item.Id">Usuń</a>
+                            </div>
+                        </div>
+                    </figure>
+                </a>
+
+                
+            </div>
+            }
+            </div>
+</div>
+    </div>
